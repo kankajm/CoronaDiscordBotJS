@@ -1,6 +1,6 @@
 {
   "name": "CoronaBotJS",
-  "version": "1.0.0",
+  "version": "1.0",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -13,9 +13,6 @@
     "axios": "^0.19.2",
     "chalk": "^4.1.0",
     "discord.js": "^12.2.0",
-    "is-reachable": "^4.0.0",
-    "node-fetch": "^2.6.0",
-    "ping": "^0.2.3",
-    "request": "^2.88.2"
+    "is-reachable": "^4.0.0"
   }
 }

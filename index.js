@@ -44,8 +44,8 @@ client.on('message', async message => {
         .addFields(
             { name: 'Bot version:', value: version },
             { name: 'Node.JS version:', value: nodeVersion },
+            { name: 'GitHub repository:', value: 'https://github.com/kankajm/CoronaDiscordBotJS' },
         )
-        
         return message.channel.send(embedVersion)
     }
     else if (command === 'servers') {
