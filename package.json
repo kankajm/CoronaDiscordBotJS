@@ -20,6 +20,7 @@
     "axios": "^0.19.2",
     "chalk": "^4.1.0",
     "discord.js": "^12.3.1",
+    "express": "^4.17.1",
     "is-reachable": "^4.0.0"
   }
 }
