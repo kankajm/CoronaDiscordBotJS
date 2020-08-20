@@ -1,18 +1,25 @@
 {
-  "name": "CoronaBotJS",
-  "version": "1.0",
-  "description": "",
+  "name": "coronabotjs",
+  "version": "1.1.0",
+  "description": "[![Discord Bots](https://top.gg/api/widget/status/692525015668621321.svg)](https://top.gg/bot/692525015668621321)",
   "main": "index.js",
   "scripts": {
     "run": "node index.js"
   },
-  "keywords": [],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kankajm/CoronaDiscordBotJS.git"
+  },
   "author": "Jaroslav Kaňka",
   "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/kankajm/CoronaDiscordBotJS/issues"
+  },
+  "homepage": "https://github.com/kankajm/CoronaDiscordBotJS#readme",
   "dependencies": {
     "axios": "^0.19.2",
     "chalk": "^4.1.0",
-    "discord.js": "^12.2.0",
+    "discord.js": "^12.3.1",
     "is-reachable": "^4.0.0"
   }
 }

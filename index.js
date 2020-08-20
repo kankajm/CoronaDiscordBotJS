@@ -4,6 +4,7 @@ const os = require('os');
 const { prefix, token, version, WHOInfo, inviteLink } = require('./config.json');
 const chalk = require('chalk');
 const apireq = require('./apireq');
+const webserver = require('./webserver');
 
 const systemName = os.type()
 const systemRam = Math.round(os.totalmem() * 0.000001) + ' Mb (' + Math.round(os.freemem() * 0.000001) + ' Mb FREE)'
@@ -19,6 +20,8 @@ client.once('ready', async () => {
     console.log(chalk.green.bold('[INFO]') + ' Total RAM on server: ' + systemRam)
     console.log(chalk.green.bold('[INFO]') + ' Name: ' + client.user.username)
     console.log(chalk.green.bold('[INFO]') + ' ID: ' + client.user.id)
+    // Start a webserver for online control
+    webserver.startWebServer()
     // Checks if API works. If not stop bot.
     const apiStatus = await apireq.getAPIStatus()
     if (apiStatus === "API DOWN!") {
