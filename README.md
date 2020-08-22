@@ -3,6 +3,13 @@
 
 ### CoronaBot rewrite from discord.py to discord.js
 
+### How to create Docker image and run it:
+
+```
+docker build -t coronabot .
+docker run -d -p 5001:5001 coronabotdevtest1300
+```
+
 ### Credits and Other Project Licenses
 
-- **COVID-19 API:** https://github.com/javieraviles/covidAPI
+- **COVID-19 API:** https://github.com/disease-sh/API
