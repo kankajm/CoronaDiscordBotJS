@@ -7,7 +7,7 @@
 
 ```
 docker build -t coronabot .
-docker run -d -p 5001:5001 coronabotdevtest1300
+docker run -d -p 5001:5001 coronabot
 ```
 
 ### Credits and Other Project Licenses

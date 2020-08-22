@@ -1,7 +1,9 @@
 {
 	"prefix": ".corona",
 	"token": "",
-	"version": "1.3 DEVELOPMENT",
+	"version": "1.4 PRODUCTION",
 	"inviteLink": "https://jkanka.cz/invite",
-	"APILink": "https://corona.lmao.ninja/"
+	"APILink": "https://corona.lmao.ninja/",
+	"embedColor": "#FF6347",
+	"coronaLogo": "https://iili.io/d0jzrP.png"
 }
