@@ -136,6 +136,7 @@ client.on('message', async message => {
             { name: 'To show version of the bot use:', value: '.corona version', inline: true },
             { name: 'To show overall performance of the bot use:', value: '.corona performance', inline: true },
             { name: 'To invite this bot on your server use:', value: '.corona invite', inline: true },
+            { name: 'To show on how many servers CoronaBot is:', value: '.corona servers', inline: true },
             { name: 'To show authors of the CoronaBot:', value: '.corona authors', inline: true }
         )
         .setFooter('In case of any problem please contact me (kanka@jkanka.cz or kankaj#1973)', 'https://jkanka.cz/ikonka.png')
