@@ -1,5 +1,5 @@
 const axios = require('axios');
-const { APILink, APILinkWorld } = require('./config.json');
+const { APILink } = require('./config.json');
 const isReachable = require('is-reachable');
 
 async function checkIfRightCountry(countryName) {
@@ -11,7 +11,7 @@ async function checkIfRightCountry(countryName) {
 }
 
 async function getDataOfCountry(countryName) {
-    const data = axios.get(`${APILink}v2/countries/${countryName}`)
+    const data = axios.get(`${APILink}v2/countries/${countryName}?yesterday=1`)
                 .then(res => res.data)
                 .catch(err => err)
     return data

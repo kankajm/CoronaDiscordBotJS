@@ -1,5 +1,4 @@
 const express = require('express');
-const chalk = require('chalk');
 
 function startWebServer() {
     const app = express();
@@ -10,7 +9,7 @@ function startWebServer() {
                   "node_version": process.version});
     });
     const port = 5001;
-    app.listen(port, () => console.log(chalk.green.bold('[INFO]') + ' ONLINE CONTROL IS RUNNING ON PORT: ' + port));
+    app.listen(port, () => console.log(`ONLINE CONTROL IS RUNNING ON PORT: ${port}`));
 }
 
 module.exports = { startWebServer }

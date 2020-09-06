@@ -2,7 +2,6 @@ const Discord = require('discord.js');
 const client = new Discord.Client();
 const os = require('os');
 const { prefix, token, version, inviteLink, embedColor, coronaLogo } = require('./config.json');
-const chalk = require('chalk');
 const apireq = require('./apireq');
 const webserver = require('./webserver');
 const dFormat = require('./data_formatting');
@@ -16,20 +15,19 @@ console.clear()
 
 client.once('ready', async () => {
     // Prints basic info about server and status
-    console.log(chalk.green.bold('[INFO]') + ' Bot is online! Bot version: ' + version)
-    console.log(chalk.green.bold('[INFO]') + ' Server is running on ' + systemName + ', Node.js version: ' + nodeVersion)
-    console.log(chalk.green.bold('[INFO]') + ' Total RAM on server: ' + systemRam)
-    console.log(chalk.green.bold('[INFO]') + ' Name: ' + client.user.username)
-    console.log(chalk.green.bold('[INFO]') + ' ID: ' + client.user.id)
+    console.log(`Bot is online! Bot version: ${version}`)
+    console.log(`Server is running on ${systemName}, Node.js version: ${nodeVersion}`)
+    console.log(`Total RAM on server: ${systemRam}`)
+    console.log(`Name: ${client.user.username}`)
+    console.log(`ID: ${client.user.id}`)
     // Start a webserver for online control
     webserver.startWebServer()
     // Checks if APIs works. If not stop bot.
     const apiStatus = await apireq.getAPIStatus()
     if (apiStatus === "API DOWN!") {
-        console.log(chalk.red.bold('[CRITICAL ERROR]') + ' API DOES NOT WORK.')
-        process.exit(1)
+        console.log('API DOES NOT WORK.')
     } else {
-        console.log(chalk.green.bold('[INFO]') + ' API works so bot can serve requests now.')
+        console.log('API works so bot can serve requests now.')
     }
     // Print Rich Presence
     client.user.setActivity('.corona help', { type: 'PLAYING' })
@@ -111,7 +109,6 @@ client.on('message', async message => {
         return message.channel.send(inviteEmbed)
     }
     else if (command === 'info') {
-        const data = await apireq.getDataOfWorld()
         const authorAvatarURL = message.author.avatarURL()
         const infoEmbed = new Discord.MessageEmbed()
         .setColor(embedColor)
