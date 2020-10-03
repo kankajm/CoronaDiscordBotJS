@@ -5,6 +5,7 @@ COPY . /app
 RUN apt-get update
 
 RUN npm install discord.js
+RUN npm install pm2 -g
 RUN npm install axios
 RUN npm install is-reachable
 RUN npm install express
@@ -19,4 +20,4 @@ RUN tsc /app/webserver.ts
 
 EXPOSE 5001
 
-CMD node /app/index.js
+CMD ["pm2-runtime", "/app/index.js"]

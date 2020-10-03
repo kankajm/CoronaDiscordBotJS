@@ -26,15 +26,41 @@ client.once('ready', async () => {
     const apiStatus = await apireq.getAPIStatus()
     if (apiStatus === "API DOWN!") {
         console.log('API DOES NOT WORK.')
+        process.exit()
     } else {
         console.log('API works so bot can serve requests now.')
     }
-    // Print Rich Presence
-    client.user.setActivity('.corona help', { type: 'PLAYING' })
 });
 
+// Print Rich Presence (changes every 20sec).
+client.on('ready', () => {
+    setInterval(() => {
+        client.user.setActivity(dFormat.getOneRPC(client.guilds.cache.size), { type: 'PLAYING' })
+    }, 10000)
+});
+
+// Listens to Admin commands requested by Developers.
 client.on('message', async message => {
-    if (!message.content.startsWith(prefix) || message.author.bot) return;
+    const botAdminPrefix = ".coronadev"
+    let messageAuthor = message.author.id
+
+    const args = message.content.slice(botAdminPrefix.length).trim().split(' ');
+    const command = args.shift().toLowerCase();
+
+    if (!message.content.startsWith(botAdminPrefix) || message.author.bot) return;
+    // allows only if users are kankaj or R4Y.
+    if (messageAuthor === "161071543584030720" || messageAuthor === "432250055949549579") {
+        // Restart command. (PM2)
+        if (command === 'restart') {
+            console.log('RESTART BY ' + message.author.username)
+            process.exit()
+        }
+    }
+});
+
+// Listens to all users.
+client.on('message', async message => {
+    if (!message.content.startsWith(prefix) || message.author.bot || message.content.startsWith('.coronadev')) return;
 
     const args = message.content.slice(prefix.length).trim().split(' ');
     const command = args.shift().toLowerCase();
