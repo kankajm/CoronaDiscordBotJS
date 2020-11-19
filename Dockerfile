@@ -1,4 +1,4 @@
-FROM node:latest
+FROM node:current
 
 COPY . /app
 
@@ -9,11 +9,10 @@ RUN npm install pm2 -g
 RUN npm install axios
 RUN npm install is-reachable
 RUN npm install -g typescript
+RUN npm install ts-node
 
 RUN npm i @types/node
 
-RUN tsc /app/index.ts
-RUN tsc /app/data_formatting.ts
-RUN tsc /app/apireq.ts
+RUN tsc
 
-CMD ["pm2-runtime", "/app/index.js"]
+CMD ["pm2-runtime", "/app/out/index.js"]

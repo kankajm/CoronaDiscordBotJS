@@ -1,5 +1,5 @@
 const axios = require("axios");
-const { APILink } = require("./config.json");
+const { APILink } = require("../config.json");
 const isReachable = require("is-reachable");
 
 async function checkIfRightCountry(countryName: string) {

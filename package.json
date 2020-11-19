@@ -1,11 +1,10 @@
 {
   "name": "coronabotjs",
-  "version": "1.9.0",
+  "version": "1.9.1",
   "description": "[![Discord Bots](https://top.gg/api/widget/status/692525015668621321.svg)](https://top.gg/bot/692525015668621321)",
   "main": "index.js",
   "scripts": {
-    "compile": "tsc apireq && tsc data_formatting && tsc index",
-    "justwork": "node index"
+    "justwork": "ts-node index"
   },
   "repository": {
     "type": "git",
@@ -18,11 +17,14 @@
   },
   "homepage": "https://github.com/kankajm/CoronaDiscordBotJS#readme",
   "dependencies": {
+    "@types/axios": "^0.14.0",
+    "@types/is-reachable": "^3.1.0",
     "@types/node": "^14.14.7",
     "axios": "^0.19.2",
     "delay": "^4.4.0",
     "discord.js": "^12.4.1",
-    "is-reachable": "^4.0.0"
+    "is-reachable": "^4.0.0",
+    "ts-node": "^9.0.0"
   },
   "devDependencies": {
     "eslint": "^7.13.0"

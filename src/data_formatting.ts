@@ -1,10 +1,4 @@
-function createFlagEmoji(country_iso2: string) {
-  const iso2ToLower = country_iso2.toLowerCase();
-  const flagEmoji = `:flag_${iso2ToLower}:`;
-  return flagEmoji;
-}
-
-function formatNumber(num: number) {
+function formatNumber(num: number): string {
   return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
 }
 
@@ -25,4 +19,4 @@ function getOneRPC(serversJoined: number) {
   return rpcs[getRandomInt(3)];
 }
 
-module.exports = { createFlagEmoji, formatNumber, covidInfo, getOneRPC };
+module.exports = { covidInfo, getOneRPC };
