@@ -36,7 +36,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 var axios = require("axios");
-var APILink = require("../config.json").APILink;
+var _a = require("../config.json"), APILink = _a.APILink, additionalApi = _a.additionalApi;
 var isReachable = require("is-reachable");
 function checkIfRightCountry(countryName) {
     return __awaiter(this, void 0, void 0, function () {
@@ -57,6 +57,19 @@ function getDataOfCountry(countryName) {
         return __generator(this, function (_a) {
             data = axios
                 .get(APILink + "v3/covid-19/countries/" + countryName + "?yesterday=1")
+                .then(function (res) { return res.data; })
+                .catch(function (err) { return err; });
+            return [2 /*return*/, data];
+        });
+    });
+}
+// const data = await axios ...
+function getPESData() {
+    return __awaiter(this, void 0, void 0, function () {
+        var data;
+        return __generator(this, function (_a) {
+            data = axios
+                .get(additionalApi + "api/pes")
                 .then(function (res) { return res.data; })
                 .catch(function (err) { return err; });
             return [2 /*return*/, data];
@@ -94,9 +107,19 @@ function getAPIStatus() {
         });
     });
 }
+function sendActivity(user_id, nickname, discriminator, command) {
+    return __awaiter(this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            axios.get(additionalApi + "api/activity?user_id=" + user_id + "&nickname=" + nickname + "&discriminator=" + discriminator + "&command=" + command);
+            return [2 /*return*/];
+        });
+    });
+}
 module.exports = {
     getDataOfCountry: getDataOfCountry,
     checkIfRightCountry: checkIfRightCountry,
     getAPIStatus: getAPIStatus,
     getDataOfWorld: getDataOfWorld,
+    sendActivity: sendActivity,
+    getPESData: getPESData
 };

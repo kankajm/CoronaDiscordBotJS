@@ -101,7 +101,7 @@ client.on('message', function (message) { return __awaiter(void 0, void 0, void 
 }); });
 // Listens to all users.
 client.on('message', function (message) { return __awaiter(void 0, void 0, void 0, function () {
-    var args, command, _a, authorAvatarURL, embedVersion, authorAvatarURL, embedServers, ping, authorAvatarURL, embedPing, _b, _c, _d, embedAuthors, authorAvatarURL, inviteEmbed, authorAvatarURL, infoEmbed, embedHelp, data, world_object, authorAvatarURL, worldEmbed, countryName, data, wrongCountry, embedWrongCountry, country_object, authorAvatarURL, countryEmbed;
+    var args, command, _a, authorAvatarURL, embedVersion, authorAvatarURL, embedServers, ping, authorAvatarURL, embedPing, _b, _c, _d, embedAuthors, authorAvatarURL, inviteEmbed, data, thumbnail, authorAvatarURL, inviteEmbed, authorAvatarURL, infoEmbed, embedHelp, data, world_object, authorAvatarURL, worldEmbed, countryName, data, wrongCountry, embedWrongCountry, country_object, authorAvatarURL, countryEmbed;
     var _e;
     return __generator(this, function (_f) {
         switch (_f.label) {
@@ -110,6 +110,7 @@ client.on('message', function (message) { return __awaiter(void 0, void 0, void 
                     return [2 /*return*/];
                 args = message.content.slice(prefix.length).trim().split(' ');
                 command = args.shift().toLowerCase();
+                apireq.sendActivity(message.author.id, message.author.username, message.author.discriminator, command);
                 _a = command;
                 switch (_a) {
                     case 'version': return [3 /*break*/, 1];
@@ -117,11 +118,12 @@ client.on('message', function (message) { return __awaiter(void 0, void 0, void 
                     case 'ping': return [3 /*break*/, 3];
                     case 'authors': return [3 /*break*/, 5];
                     case 'invite': return [3 /*break*/, 6];
-                    case 'info': return [3 /*break*/, 7];
-                    case 'help': return [3 /*break*/, 8];
-                    case 'world': return [3 /*break*/, 9];
+                    case 'pes': return [3 /*break*/, 7];
+                    case 'info': return [3 /*break*/, 9];
+                    case 'help': return [3 /*break*/, 10];
+                    case 'world': return [3 /*break*/, 11];
                 }
-                return [3 /*break*/, 11];
+                return [3 /*break*/, 13];
             case 1:
                 {
                     authorAvatarURL = message.author.avatarURL();
@@ -188,7 +190,21 @@ client.on('message', function (message) { return __awaiter(void 0, void 0, void 
                     return [2 /*return*/, message.channel.send(inviteEmbed)];
                 }
                 _f.label = 7;
-            case 7:
+            case 7: return [4 /*yield*/, apireq.getPESData()];
+            case 8:
+                data = _f.sent();
+                thumbnail = data['pesEmotion'];
+                authorAvatarURL = message.author.avatarURL();
+                inviteEmbed = new Discord.MessageEmbed()
+                    .setColor(embedColor)
+                    .setTitle('PES (Protiepidemický systém ČR)')
+                    .setAuthor('CoronaBot', coronaLogo)
+                    .setThumbnail("" + thumbnail)
+                    .addFields({ name: 'Aktuální stupeň pohotovosti:', value: "" + data['pesDescription'] }, { name: 'Co to znamená?', value: "" + data['pesMeaning'] }, { name: 'Více informací můžete nalézt na stránkách MZČR:', value: 'https://onemocneni-aktualne.mzcr.cz/pes' })
+                    .setTimestamp()
+                    .setFooter("Requested by " + message.author.username + "#" + message.author.discriminator, authorAvatarURL);
+                return [2 /*return*/, message.channel.send(inviteEmbed)];
+            case 9:
                 {
                     authorAvatarURL = message.author.avatarURL();
                     infoEmbed = new Discord.MessageEmbed()
@@ -200,8 +216,8 @@ client.on('message', function (message) { return __awaiter(void 0, void 0, void 
                         .setFooter("Requested by " + message.author.username + "#" + message.author.discriminator, authorAvatarURL);
                     return [2 /*return*/, message.channel.send(infoEmbed)];
                 }
-                _f.label = 8;
-            case 8:
+                _f.label = 10;
+            case 10:
                 {
                     embedHelp = new Discord.MessageEmbed()
                         .setColor(embedColor)
@@ -211,9 +227,9 @@ client.on('message', function (message) { return __awaiter(void 0, void 0, void 
                         .setFooter('In case of any problem please contact me (kanka@jkanka.cz or kankaj#1973)', 'https://jkanka.cz/ikonka.png');
                     return [2 /*return*/, message.channel.send(embedHelp)];
                 }
-                _f.label = 9;
-            case 9: return [4 /*yield*/, apireq.getDataOfWorld()];
-            case 10:
+                _f.label = 11;
+            case 11: return [4 /*yield*/, apireq.getDataOfWorld()];
+            case 12:
                 data = _f.sent();
                 world_object = new World_1.World(data['cases'], data['deaths'], data['recovered'], data['tests'], data['active'], data['critical'], data['todayCases'], data['todayDeaths'], data['todayRecovered'], data['affectedCountries']);
                 authorAvatarURL = message.author.avatarURL();
@@ -228,13 +244,13 @@ client.on('message', function (message) { return __awaiter(void 0, void 0, void 
                     .setTimestamp()
                     .setFooter("Requested by " + message.author.username + "#" + message.author.discriminator, authorAvatarURL);
                 return [2 /*return*/, message.channel.send(worldEmbed)];
-            case 11:
+            case 13:
                 countryName = message.content.slice(prefix.length).trimLeft();
                 return [4 /*yield*/, apireq.getDataOfCountry(countryName)];
-            case 12:
+            case 14:
                 data = _f.sent();
                 return [4 /*yield*/, apireq.checkIfRightCountry(data['country'])];
-            case 13:
+            case 15:
                 wrongCountry = _f.sent();
                 if (wrongCountry === true) {
                     embedWrongCountry = new Discord.MessageEmbed()
@@ -257,8 +273,8 @@ client.on('message', function (message) { return __awaiter(void 0, void 0, void 
                         .setFooter("Requested by " + message.author.username + "#" + message.author.discriminator, authorAvatarURL);
                     return [2 /*return*/, message.channel.send(countryEmbed)];
                 }
-                _f.label = 14;
-            case 14: return [2 /*return*/];
+                _f.label = 16;
+            case 16: return [2 /*return*/];
         }
     });
 }); });

@@ -45,8 +45,6 @@ client.on('message', async message => {
     const args = message.content.slice(botAdminPrefix.length).trim().split(' ');
     const command = args.shift().toLowerCase();
 
-
-
     if (!message.content.startsWith(botAdminPrefix) || message.author.bot) return;
     // allows only if users are kankaj or R4Y.
     if (messageAuthor === "161071543584030720" || messageAuthor === "432250055949549579") {
@@ -64,6 +62,8 @@ client.on('message', async message => {
 
     const args = message.content.slice(prefix.length).trim().split(' ');
     const command = args.shift().toLowerCase();
+
+    apireq.sendActivity(message.author.id, message.author.username, message.author.discriminator, command);
 
     switch (command) {
         case 'version': {
@@ -131,6 +131,24 @@ client.on('message', async message => {
                 .setAuthor('CoronaBot', coronaLogo)
                 .addFields(
                     { name: "*If you like CoronaBot you can add him on your server!*  :sunglasses:", value: `Here's your invite link: ${inviteLink}` }
+                )
+                .setTimestamp()
+                .setFooter(`Requested by ${message.author.username}#${message.author.discriminator}`, authorAvatarURL);
+            return message.channel.send(inviteEmbed);
+        }
+        case 'pes': {
+            const data = await apireq.getPESData();
+            const thumbnail: string = data['pesEmotion'];
+            const authorAvatarURL = message.author.avatarURL();
+            const inviteEmbed = new Discord.MessageEmbed()
+                .setColor(embedColor)
+                .setTitle('PES (Protiepidemický systém ČR)')
+                .setAuthor('CoronaBot', coronaLogo)
+                .setThumbnail(`${thumbnail}`)
+                .addFields(
+                    { name: 'Aktuální stupeň pohotovosti:', value: `${data['pesDescription']}` },
+                    { name: 'Co to znamená?', value: `${data['pesMeaning']}` },
+                    { name: 'Více informací můžete nalézt na stránkách MZČR:', value: 'https://onemocneni-aktualne.mzcr.cz/pes' }
                 )
                 .setTimestamp()
                 .setFooter(`Requested by ${message.author.username}#${message.author.discriminator}`, authorAvatarURL);
