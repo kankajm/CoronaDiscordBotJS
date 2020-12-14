@@ -1,11 +1,9 @@
 {
 	"prefix": ".corona",
-	"token": "",
-	"version": "1.9.2 DEVELOPMENT",
-	"inviteLink": "https://jkanka.cz/invite",
+	"version": "1.9.3 DEVELOPMENT",
+	"inviteLink": "https://corona-bot.eu/invite",
 	"APILink": "https://corona.lmao.ninja/",
 	"embedColor": "#FF6347",
-	"coronaLogo": "https://iili.io/d0jzrP.png",
-	"additionalApi": "https://coalapi.eu/",
-	"lastUpdate": "23.11.2020"
+	"coronaLogo": "https://ourghtfu.sirv.com/Images/coronabot2.png",
+	"lastUpdate": "14.12.2020"
 }

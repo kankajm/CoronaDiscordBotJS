@@ -36,48 +36,38 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+var _a = require('../config.json'), prefix = _a.prefix, version = _a.version, inviteLink = _a.inviteLink, embedColor = _a.embedColor, coronaLogo = _a.coronaLogo, lastUpdate = _a.lastUpdate;
+var dotenv = require('dotenv');
+dotenv.config();
+var _b = require('./core/systemInfo'), systemName = _b.systemName, nodeVersion = _b.nodeVersion;
+var _c = require('./core/apiRequests'), getDataOfCountry = _c.getDataOfCountry, checkIfRightCountry = _c.checkIfRightCountry, getDataOfWorld = _c.getDataOfWorld, scrapePESNumber = _c.scrapePESNumber, APIStatusCode = _c.APIStatusCode;
+var initializeBot = require('./core/initialize').initializeBot;
+var richPresence = require('./core/rpc').richPresence;
+var getPESData = require('./core/scraping/pes').getPESData;
 var Discord = require('discord.js');
 var client = new Discord.Client();
-var os = require('os');
-var _a = require('../config.json'), prefix = _a.prefix, token = _a.token, version = _a.version, inviteLink = _a.inviteLink, embedColor = _a.embedColor, coronaLogo = _a.coronaLogo, lastUpdate = _a.lastUpdate;
-var apireq = require('./apireq');
-var dFormat = require('./data_formatting');
 var Country_1 = require("./models/Country");
 var World_1 = require("./models/World");
-var systemName = os.type();
-var nodeVersion = process.version;
 // Clears console on start
 console.clear();
-client.once('ready', function () { return __awaiter(void 0, void 0, void 0, function () {
-    var apiStatus;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                // Prints basic info about server and status
-                console.log("Bot is online! Bot version: " + version);
-                console.log("Server is running on " + systemName + ", Node.js version: " + nodeVersion);
-                console.log("Name: " + client.user.username);
-                console.log("ID: " + client.user.id);
-                return [4 /*yield*/, apireq.getAPIStatus()];
-            case 1:
-                apiStatus = _a.sent();
-                if (apiStatus === "API DOWN!") {
-                    console.log('API DOES NOT WORK.');
-                    process.exit();
-                }
-                else {
-                    console.log('API works so bot can serve requests now.');
-                }
-                return [2 /*return*/];
-        }
-    });
-}); });
+client.once('ready', function () {
+    // core/initialize.ts
+    initializeBot(version, systemName, nodeVersion, client.user.username, client.user.id);
+});
 // Print Rich Presence (changes every 8sec).
 client.on('ready', function () {
     setInterval(function () {
-        client.user.setActivity(dFormat.getOneRPC(client.guilds.cache.size), { type: 'PLAYING' });
+        client.user.setActivity(richPresence(client.guilds.cache.size), { type: 'PLAYING' });
     }, 8000);
 });
+function apiStatusFormatter(statusCode) {
+    if (statusCode === 200) {
+        return 'API works properly :thumbsup:';
+    }
+    else {
+        return 'API does not work :sob:';
+    }
+}
 // Listens to Admin commands requested by Developers.
 client.on('message', function (message) { return __awaiter(void 0, void 0, void 0, function () {
     var botAdminPrefix, messageAuthor, args, command;
@@ -92,7 +82,7 @@ client.on('message', function (message) { return __awaiter(void 0, void 0, void 
         if (messageAuthor === "161071543584030720" || messageAuthor === "432250055949549579") {
             // Restart command. (PM2)
             if (command === 'restart') {
-                console.log("RESTART BY " + message.author.username);
+                console.log("RESTART BY " + message.author.username); // Log it locally
                 process.exit();
             }
         }
@@ -101,42 +91,28 @@ client.on('message', function (message) { return __awaiter(void 0, void 0, void 
 }); });
 // Listens to all users.
 client.on('message', function (message) { return __awaiter(void 0, void 0, void 0, function () {
-    var args, command, _a, authorAvatarURL, embedVersion, authorAvatarURL, embedServers, ping, authorAvatarURL, embedPing, _b, _c, _d, embedAuthors, authorAvatarURL, inviteEmbed, data, thumbnail, authorAvatarURL, inviteEmbed, authorAvatarURL, infoEmbed, embedHelp, data, world_object, authorAvatarURL, worldEmbed, countryName, data, wrongCountry, embedWrongCountry, country_object, authorAvatarURL, countryEmbed;
-    var _e;
-    return __generator(this, function (_f) {
-        switch (_f.label) {
+    var args, command, _a, authorAvatarURL, embedServers, authorAvatarURL, embedVersion, ping, authorAvatarURL, apiStatusCode, apiStatusFormatted, embedPing, embedAuthors, authorAvatarURL, inviteEmbed, pesNumber, data, thumbnail, authorAvatarURL, inviteEmbed, authorAvatarURL, infoEmbed, embedHelp, data, world_object, authorAvatarURL, worldEmbed, countryName, data, wrongCountry, embedWrongCountry, country_object, authorAvatarURL, countryEmbed;
+    return __generator(this, function (_b) {
+        switch (_b.label) {
             case 0:
                 if (!message.content.startsWith(prefix) || message.author.bot || message.content.startsWith('.coronadev'))
                     return [2 /*return*/];
                 args = message.content.slice(prefix.length).trim().split(' ');
                 command = args.shift().toLowerCase();
-                apireq.sendActivity(message.author.id, message.author.username, message.author.discriminator, command);
                 _a = command;
                 switch (_a) {
-                    case 'version': return [3 /*break*/, 1];
-                    case 'servers': return [3 /*break*/, 2];
+                    case 'servers': return [3 /*break*/, 1];
+                    case 'version': return [3 /*break*/, 2];
                     case 'ping': return [3 /*break*/, 3];
                     case 'authors': return [3 /*break*/, 5];
                     case 'invite': return [3 /*break*/, 6];
                     case 'pes': return [3 /*break*/, 7];
-                    case 'info': return [3 /*break*/, 9];
-                    case 'help': return [3 /*break*/, 10];
-                    case 'world': return [3 /*break*/, 11];
+                    case 'info': return [3 /*break*/, 10];
+                    case 'help': return [3 /*break*/, 11];
+                    case 'world': return [3 /*break*/, 12];
                 }
-                return [3 /*break*/, 13];
+                return [3 /*break*/, 14];
             case 1:
-                {
-                    authorAvatarURL = message.author.avatarURL();
-                    embedVersion = new Discord.MessageEmbed()
-                        .setColor(embedColor)
-                        .setAuthor('CoronaBot', coronaLogo)
-                        .addFields({ name: 'Bot version:', value: version }, { name: 'Node.JS version:', value: nodeVersion }, { name: 'Last update:', value: lastUpdate }, { name: 'GitHub repository:', value: 'https://github.com/kankajm/CoronaDiscordBotJS' })
-                        .setTimestamp()
-                        .setFooter("Requested by " + message.author.username + "#" + message.author.discriminator, authorAvatarURL);
-                    return [2 /*return*/, message.channel.send(embedVersion)];
-                }
-                _f.label = 2;
-            case 2:
                 {
                     authorAvatarURL = message.author.avatarURL();
                     embedServers = new Discord.MessageEmbed()
@@ -148,20 +124,31 @@ client.on('message', function (message) { return __awaiter(void 0, void 0, void 
                         .setFooter("Requested by " + message.author.username + "#" + message.author.discriminator, authorAvatarURL);
                     return [2 /*return*/, message.channel.send(embedServers)];
                 }
-                _f.label = 3;
+                _b.label = 2;
+            case 2:
+                {
+                    authorAvatarURL = message.author.avatarURL();
+                    embedVersion = new Discord.MessageEmbed()
+                        .setColor(embedColor)
+                        .setAuthor('CoronaBot', coronaLogo)
+                        .addFields({ name: 'Bot version:', value: version }, { name: 'Node.JS version:', value: nodeVersion }, { name: 'Last update:', value: lastUpdate }, { name: 'GitHub repository:', value: 'https://github.com/kankajm/CoronaDiscordBotJS' })
+                        .setTimestamp()
+                        .setFooter("Requested by " + message.author.username + "#" + message.author.discriminator, authorAvatarURL);
+                    return [2 /*return*/, message.channel.send(embedVersion)];
+                }
+                _b.label = 3;
             case 3:
                 ping = Date.now() - message.createdTimestamp + " ms";
                 authorAvatarURL = message.author.avatarURL();
-                _c = (_b = new Discord.MessageEmbed()
+                return [4 /*yield*/, APIStatusCode()];
+            case 4:
+                apiStatusCode = _b.sent();
+                apiStatusFormatted = apiStatusFormatter(apiStatusCode);
+                embedPing = new Discord.MessageEmbed()
                     .setColor(embedColor)
                     .setTitle('Bot performance test:')
-                    .setAuthor('CoronaBot', coronaLogo))
-                    .addFields;
-                _d = [{ name: 'Bot ping:', value: ping }];
-                _e = { name: 'CoronaAPI status:' };
-                return [4 /*yield*/, apireq.getAPIStatus()];
-            case 4:
-                embedPing = _c.apply(_b, _d.concat([(_e.value = _f.sent(), _e)]))
+                    .setAuthor('CoronaBot', coronaLogo)
+                    .addFields({ name: 'Bot ping:', value: ping }, { name: 'CoronaAPI status:', value: apiStatusFormatted })
                     .setTimestamp()
                     .setFooter("Requested by " + message.author.username + "#" + message.author.discriminator, authorAvatarURL);
                 return [2 /*return*/, message.channel.send(embedPing)];
@@ -172,11 +159,11 @@ client.on('message', function (message) { return __awaiter(void 0, void 0, void 
                         .setTitle('Authors of CoronaBot :tools:')
                         .setAuthor('CoronaBot', coronaLogo)
                         .setDescription('*People who programmed or helped make CoronaBot better!*')
-                        .addFields({ name: 'Creator and main programmer:', value: "Jaroslav Kaňka (kankaj#1973) :flag_cz:" }, { name: 'Bug hunter and programmer:', value: "Rayan Yessou (.[R4y]#3430) :flag_it:" }, { name: 'Bot tester:', value: "Ondřej Štěch (Spike#5530) :flag_cz:" })
-                        .setFooter('In case of any problem please contact me (kanka@jkanka.cz or kankaj#1973)', 'https://jkanka.cz/ikonka.png');
+                        .addFields({ name: 'Creator and main programmer:', value: "Jaroslav Kaňka (kankaj#2731) :flag_cz:" }, { name: 'Bug hunter and programmer:', value: "Rayan Yessou (.[R4y]#3430) :flag_it:" }, { name: 'Bot tester:', value: "Ondřej Štěch (Spike#5530) :flag_cz:" }, { name: 'CoronaBot Logo:', value: "Tadeáš Poplužník (Tágo#4220) :flag_cz:" })
+                        .setFooter('In case of any problem please contact me (kanka@jkanka.cz or kankaj#2731)', 'https://ourghtfu.sirv.com/Images/czechIcon.png');
                     return [2 /*return*/, message.channel.send(embedAuthors)];
                 }
-                _f.label = 6;
+                _b.label = 6;
             case 6:
                 {
                     authorAvatarURL = message.author.avatarURL();
@@ -189,48 +176,51 @@ client.on('message', function (message) { return __awaiter(void 0, void 0, void 
                         .setFooter("Requested by " + message.author.username + "#" + message.author.discriminator, authorAvatarURL);
                     return [2 /*return*/, message.channel.send(inviteEmbed)];
                 }
-                _f.label = 7;
-            case 7: return [4 /*yield*/, apireq.getPESData()];
+                _b.label = 7;
+            case 7: return [4 /*yield*/, scrapePESNumber()];
             case 8:
-                data = _f.sent();
-                thumbnail = data['pesEmotion'];
+                pesNumber = _b.sent();
+                return [4 /*yield*/, getPESData(pesNumber)];
+            case 9:
+                data = _b.sent();
+                thumbnail = data.PESEmotion;
                 authorAvatarURL = message.author.avatarURL();
                 inviteEmbed = new Discord.MessageEmbed()
                     .setColor(embedColor)
                     .setTitle('PES (Protiepidemický systém ČR)')
                     .setAuthor('CoronaBot', coronaLogo)
                     .setThumbnail("" + thumbnail)
-                    .addFields({ name: 'Aktuální stupeň pohotovosti:', value: "" + data['pesDescription'] }, { name: 'Co to znamená?', value: "" + data['pesMeaning'] }, { name: 'Více informací můžete nalézt na stránkách MZČR:', value: 'https://onemocneni-aktualne.mzcr.cz/pes' })
+                    .addFields({ name: 'Aktuální stupeň pohotovosti:', value: "" + data.description }, { name: 'Co to znamená?', value: "" + data.meaning }, { name: 'Více informací můžete nalézt na stránkách MZČR:', value: 'https://onemocneni-aktualne.mzcr.cz/pes' })
                     .setTimestamp()
                     .setFooter("Requested by " + message.author.username + "#" + message.author.discriminator, authorAvatarURL);
                 return [2 /*return*/, message.channel.send(inviteEmbed)];
-            case 9:
+            case 10:
                 {
                     authorAvatarURL = message.author.avatarURL();
                     infoEmbed = new Discord.MessageEmbed()
                         .setColor(embedColor)
                         .setTitle('COVID-19 Symptoms and info:')
                         .setAuthor('CoronaBot', coronaLogo)
-                        .addFields({ name: "Source: WHO", value: "" + dFormat.covidInfo() })
+                        .addFields({ name: "Source: WHO", value: "DOPLNIT!" })
                         .setTimestamp()
                         .setFooter("Requested by " + message.author.username + "#" + message.author.discriminator, authorAvatarURL);
                     return [2 /*return*/, message.channel.send(infoEmbed)];
                 }
-                _f.label = 10;
-            case 10:
+                _b.label = 11;
+            case 11:
                 {
                     embedHelp = new Discord.MessageEmbed()
                         .setColor(embedColor)
                         .setTitle('Commands for the CoronaBot:')
                         .setAuthor('CoronaBot', coronaLogo)
                         .addFields({ name: 'To show total numbers from countries all around the world use:', value: '.corona world', inline: true }, { name: 'To show info and numbers about specific country use:', value: '.corona <country>', inline: true }, { name: 'To show verified informations about symptoms of the COVID-19:', value: '.corona info', inline: true }, { name: 'To show version of the bot use:', value: '.corona version', inline: true }, { name: 'To show overall performance of the bot use:', value: '.corona ping', inline: true }, { name: 'To invite this bot on your server use:', value: '.corona invite', inline: true }, { name: 'To show on how many servers CoronaBot is:', value: '.corona servers', inline: true }, { name: 'To show authors of the CoronaBot:', value: '.corona authors', inline: true })
-                        .setFooter('In case of any problem please contact me (kanka@jkanka.cz or kankaj#1973)', 'https://jkanka.cz/ikonka.png');
+                        .setFooter('In case of any problem please contact me (kanka@jkanka.cz or kankaj#2731)', 'https://ourghtfu.sirv.com/Images/czechIcon.png');
                     return [2 /*return*/, message.channel.send(embedHelp)];
                 }
-                _f.label = 11;
-            case 11: return [4 /*yield*/, apireq.getDataOfWorld()];
-            case 12:
-                data = _f.sent();
+                _b.label = 12;
+            case 12: return [4 /*yield*/, getDataOfWorld()];
+            case 13:
+                data = _b.sent();
                 world_object = new World_1.World(data['cases'], data['deaths'], data['recovered'], data['tests'], data['active'], data['critical'], data['todayCases'], data['todayDeaths'], data['todayRecovered'], data['affectedCountries']);
                 authorAvatarURL = message.author.avatarURL();
                 worldEmbed = new Discord.MessageEmbed()
@@ -244,14 +234,14 @@ client.on('message', function (message) { return __awaiter(void 0, void 0, void 
                     .setTimestamp()
                     .setFooter("Requested by " + message.author.username + "#" + message.author.discriminator, authorAvatarURL);
                 return [2 /*return*/, message.channel.send(worldEmbed)];
-            case 13:
-                countryName = message.content.slice(prefix.length).trimLeft();
-                return [4 /*yield*/, apireq.getDataOfCountry(countryName)];
             case 14:
-                data = _f.sent();
-                return [4 /*yield*/, apireq.checkIfRightCountry(data['country'])];
+                countryName = message.content.slice(prefix.length).trimLeft();
+                return [4 /*yield*/, getDataOfCountry(countryName)];
             case 15:
-                wrongCountry = _f.sent();
+                data = _b.sent();
+                return [4 /*yield*/, checkIfRightCountry(data['country'])];
+            case 16:
+                wrongCountry = _b.sent();
                 if (wrongCountry === true) {
                     embedWrongCountry = new Discord.MessageEmbed()
                         .setColor(embedColor)
@@ -273,9 +263,9 @@ client.on('message', function (message) { return __awaiter(void 0, void 0, void 
                         .setFooter("Requested by " + message.author.username + "#" + message.author.discriminator, authorAvatarURL);
                     return [2 /*return*/, message.channel.send(countryEmbed)];
                 }
-                _f.label = 16;
-            case 16: return [2 /*return*/];
+                _b.label = 17;
+            case 17: return [2 /*return*/];
         }
     });
 }); });
-client.login(token);
+client.login(process.env.DISCORD_TOKEN);

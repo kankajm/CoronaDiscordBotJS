@@ -36,8 +36,10 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 var axios = require("axios");
-var _a = require("../config.json"), APILink = _a.APILink, additionalApi = _a.additionalApi;
-var isReachable = require("is-reachable");
+var request = require('request');
+var cheerio = require('cheerio');
+var rp = require('request-promise');
+var APILink = require("../../config.json").APILink;
 function checkIfRightCountry(countryName) {
     return __awaiter(this, void 0, void 0, function () {
         return __generator(this, function (_a) {
@@ -63,19 +65,6 @@ function getDataOfCountry(countryName) {
         });
     });
 }
-// const data = await axios ...
-function getPESData() {
-    return __awaiter(this, void 0, void 0, function () {
-        var data;
-        return __generator(this, function (_a) {
-            data = axios
-                .get(additionalApi + "api/pes")
-                .then(function (res) { return res.data; })
-                .catch(function (err) { return err; });
-            return [2 /*return*/, data];
-        });
-    });
-}
 function getDataOfWorld() {
     return __awaiter(this, void 0, void 0, function () {
         var data;
@@ -88,38 +77,31 @@ function getDataOfWorld() {
         });
     });
 }
-function getAPIStatus() {
+function APIStatusCode() {
     return __awaiter(this, void 0, void 0, function () {
-        var apiWorks;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, isReachable(APILink)];
-                case 1:
-                    apiWorks = _a.sent();
-                    if (apiWorks === true) {
-                        return [2 /*return*/, "API OK!"];
-                    }
-                    if (apiWorks === false) {
-                        return [2 /*return*/, "API DOWN!"];
-                    }
-                    return [2 /*return*/];
+                case 0: return [4 /*yield*/, axios
+                        .get(APILink + "v3/covid-19/all")
+                        .then(function (res) { return res.status; })];
+                case 1: return [2 /*return*/, _a.sent()];
             }
         });
     });
 }
-function sendActivity(user_id, nickname, discriminator, command) {
-    return __awaiter(this, void 0, void 0, function () {
-        return __generator(this, function (_a) {
-            axios.get(additionalApi + "api/activity?user_id=" + user_id + "&nickname=" + nickname + "&discriminator=" + discriminator + "&command=" + command);
-            return [2 /*return*/];
-        });
+function scrapePESNumber() {
+    var pesNum = rp('https://onemocneni-aktualne.mzcr.cz/pes')
+        .then(function (htmlString) {
+        var $ = cheerio.load(htmlString);
+        var siteHeading = $('span#pes-current-degree');
+        return siteHeading.contents().first().text()[7];
     });
+    return pesNum;
 }
 module.exports = {
     getDataOfCountry: getDataOfCountry,
     checkIfRightCountry: checkIfRightCountry,
-    getAPIStatus: getAPIStatus,
     getDataOfWorld: getDataOfWorld,
-    sendActivity: sendActivity,
-    getPESData: getPESData
+    scrapePESNumber: scrapePESNumber,
+    APIStatusCode: APIStatusCode
 };

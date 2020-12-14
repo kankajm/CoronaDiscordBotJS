@@ -1,46 +1,47 @@
+const { prefix, version, inviteLink, embedColor, coronaLogo, lastUpdate } = require('../config.json');
+
+const dotenv = require('dotenv');
+dotenv.config();
+
+const { systemName, nodeVersion } = require('./core/systemInfo');
+const { getDataOfCountry, checkIfRightCountry, getDataOfWorld, scrapePESNumber, APIStatusCode } = require('./core/apiRequests');
+const { initializeBot } = require('./core/initialize');
+const { richPresence } = require('./core/rpc');
+const { getPESData } = require('./core/scraping/pes');
+
 const Discord = require('discord.js');
 const client = new Discord.Client();
-const os = require('os');
-const { prefix, token, version, inviteLink, embedColor, coronaLogo, lastUpdate } = require('../config.json');
-const apireq = require('./apireq');
-const dFormat = require('./data_formatting');
 
 import { Country } from './models/Country';
 import { World } from './models/World';
 
-const systemName = os.type();
-const nodeVersion = process.version;
-
 // Clears console on start
 console.clear();
 
-client.once('ready', async () => {
-    // Prints basic info about server and status
-    console.log(`Bot is online! Bot version: ${version}`);
-    console.log(`Server is running on ${systemName}, Node.js version: ${nodeVersion}`);
-    console.log(`Name: ${client.user.username}`);
-    console.log(`ID: ${client.user.id}`);
-    // Checks if APIs works. If not stop bot.
-    const apiStatus = await apireq.getAPIStatus();
-    if (apiStatus === "API DOWN!") {
-        console.log('API DOES NOT WORK.');
-        process.exit();
-    } else {
-        console.log('API works so bot can serve requests now.');
-    }
+client.once('ready', () => {
+    // core/initialize.ts
+    initializeBot(version, systemName, nodeVersion, client.user.username, client.user.id);
 });
 
 // Print Rich Presence (changes every 8sec).
 client.on('ready', () => {
     setInterval(() => {
-        client.user.setActivity(dFormat.getOneRPC(client.guilds.cache.size), { type: 'PLAYING' })
+        client.user.setActivity(richPresence(client.guilds.cache.size), { type: 'PLAYING' });
     }, 8000);
 });
+
+function apiStatusFormatter(statusCode: number) {
+    if (statusCode === 200) {
+        return 'API works properly :thumbsup:'
+    } else {
+        return 'API does not work :sob:'
+    }
+}
 
 // Listens to Admin commands requested by Developers.
 client.on('message', async message => {
     const botAdminPrefix = ".coronadev";
-    let messageAuthor = message.author.id;
+    const messageAuthor = message.author.id;
 
     const args = message.content.slice(botAdminPrefix.length).trim().split(' ');
     const command = args.shift().toLowerCase();
@@ -50,7 +51,7 @@ client.on('message', async message => {
     if (messageAuthor === "161071543584030720" || messageAuthor === "432250055949549579") {
         // Restart command. (PM2)
         if (command === 'restart') {
-            console.log(`RESTART BY ${message.author.username}`);
+            console.log(`RESTART BY ${message.author.username}`); // Log it locally
             process.exit();
         }
     }
@@ -63,9 +64,22 @@ client.on('message', async message => {
     const args = message.content.slice(prefix.length).trim().split(' ');
     const command = args.shift().toLowerCase();
 
-    apireq.sendActivity(message.author.id, message.author.username, message.author.discriminator, command);
+    //apireq.sendActivity(message.author.id, message.author.username, message.author.discriminator, command);
 
     switch (command) {
+        case 'servers': {
+            const authorAvatarURL = message.author.avatarURL();
+            const embedServers = new Discord.MessageEmbed()
+                .setColor(embedColor)
+                .setTitle('CoronaBot Servers :desktop:')
+                .setAuthor('CoronaBot', coronaLogo)
+                .addFields(
+                    { name: 'CoronaBot is already on ' + client.guilds.cache.size + ' servers! :sunglasses:', value: `If you like the bot and you want him on your server, you can add him with this link: ${inviteLink}` }
+                )
+                .setTimestamp()
+                .setFooter(`Requested by ${message.author.username}#${message.author.discriminator}`, authorAvatarURL);
+            return message.channel.send(embedServers);
+        }
         case 'version': {
             const authorAvatarURL = message.author.avatarURL();
             const embedVersion = new Discord.MessageEmbed()
@@ -81,29 +95,18 @@ client.on('message', async message => {
                 .setFooter(`Requested by ${message.author.username}#${message.author.discriminator}`, authorAvatarURL);
             return message.channel.send(embedVersion);
         }
-        case 'servers': {
-            const authorAvatarURL = message.author.avatarURL();
-            const embedServers = new Discord.MessageEmbed()
-                .setColor(embedColor)
-                .setTitle('CoronaBot Servers :desktop:')
-                .setAuthor('CoronaBot', coronaLogo)
-                .addFields(
-                    { name: 'CoronaBot is already on ' + client.guilds.cache.size + ' servers! :sunglasses:', value: `If you like the bot and you want him on your server, you can add him with this link: ${inviteLink}` }
-                )
-                .setTimestamp()
-                .setFooter(`Requested by ${message.author.username}#${message.author.discriminator}`, authorAvatarURL);
-            return message.channel.send(embedServers);
-        }
         case 'ping': {
             const ping = Date.now() - message.createdTimestamp + " ms";
             const authorAvatarURL = message.author.avatarURL();
+            const apiStatusCode: number = await APIStatusCode();
+            const apiStatusFormatted: string = apiStatusFormatter(apiStatusCode);
             const embedPing = new Discord.MessageEmbed()
                 .setColor(embedColor)
                 .setTitle('Bot performance test:')
                 .setAuthor('CoronaBot', coronaLogo)
                 .addFields(
                     { name: 'Bot ping:', value: ping },
-                    { name: 'CoronaAPI status:', value: await apireq.getAPIStatus() }
+                    { name: 'CoronaAPI status:', value: apiStatusFormatted}
                 )
                 .setTimestamp()
                 .setFooter(`Requested by ${message.author.username}#${message.author.discriminator}`, authorAvatarURL);
@@ -116,11 +119,12 @@ client.on('message', async message => {
                 .setAuthor('CoronaBot', coronaLogo)
                 .setDescription('*People who programmed or helped make CoronaBot better!*')
                 .addFields(
-                    { name: 'Creator and main programmer:', value: "Jaroslav Kaňka (kankaj#1973) :flag_cz:" },
+                    { name: 'Creator and main programmer:', value: "Jaroslav Kaňka (kankaj#2731) :flag_cz:" },
                     { name: 'Bug hunter and programmer:', value: "Rayan Yessou (.[R4y]#3430) :flag_it:" },
-                    { name: 'Bot tester:', value: "Ondřej Štěch (Spike#5530) :flag_cz:" }
+                    { name: 'Bot tester:', value: "Ondřej Štěch (Spike#5530) :flag_cz:" },
+                    { name: 'CoronaBot Logo:', value: "Tadeáš Poplužník (Tágo#4220) :flag_cz:" }
                 )
-                .setFooter('In case of any problem please contact me (kanka@jkanka.cz or kankaj#1973)', 'https://jkanka.cz/ikonka.png');
+                .setFooter('In case of any problem please contact me (kanka@jkanka.cz or kankaj#2731)', 'https://ourghtfu.sirv.com/Images/czechIcon.png');
             return message.channel.send(embedAuthors);
         }
         case 'invite': {
@@ -137,8 +141,10 @@ client.on('message', async message => {
             return message.channel.send(inviteEmbed);
         }
         case 'pes': {
-            const data = await apireq.getPESData();
-            const thumbnail: string = data['pesEmotion'];
+            const pesNumber: number = await scrapePESNumber();
+            const data = await getPESData(pesNumber);
+
+            const thumbnail: string = data.PESEmotion;
             const authorAvatarURL = message.author.avatarURL();
             const inviteEmbed = new Discord.MessageEmbed()
                 .setColor(embedColor)
@@ -146,8 +152,8 @@ client.on('message', async message => {
                 .setAuthor('CoronaBot', coronaLogo)
                 .setThumbnail(`${thumbnail}`)
                 .addFields(
-                    { name: 'Aktuální stupeň pohotovosti:', value: `${data['pesDescription']}` },
-                    { name: 'Co to znamená?', value: `${data['pesMeaning']}` },
+                    { name: 'Aktuální stupeň pohotovosti:', value: `${data.description}` },
+                    { name: 'Co to znamená?', value: `${data.meaning}` },
                     { name: 'Více informací můžete nalézt na stránkách MZČR:', value: 'https://onemocneni-aktualne.mzcr.cz/pes' }
                 )
                 .setTimestamp()
@@ -161,7 +167,7 @@ client.on('message', async message => {
                 .setTitle('COVID-19 Symptoms and info:')
                 .setAuthor('CoronaBot', coronaLogo)
                 .addFields(
-                    { name: "Source: WHO", value: `${dFormat.covidInfo()}` }
+                    { name: "Source: WHO", value: `DOPLNIT!` }
                 )
                 .setTimestamp()
                 .setFooter(`Requested by ${message.author.username}#${message.author.discriminator}`, authorAvatarURL);
@@ -182,11 +188,11 @@ client.on('message', async message => {
                     { name: 'To show on how many servers CoronaBot is:', value: '.corona servers', inline: true },
                     { name: 'To show authors of the CoronaBot:', value: '.corona authors', inline: true }
                 )
-                .setFooter('In case of any problem please contact me (kanka@jkanka.cz or kankaj#1973)', 'https://jkanka.cz/ikonka.png');
+                .setFooter('In case of any problem please contact me (kanka@jkanka.cz or kankaj#2731)', 'https://ourghtfu.sirv.com/Images/czechIcon.png');
             return message.channel.send(embedHelp);
         }
         case 'world': {
-            const data = await apireq.getDataOfWorld();
+            const data = await getDataOfWorld();
             const world_object: World = new World(data['cases'], data['deaths'], data['recovered'], data['tests'], data['active'], data['critical'], data['todayCases'], data['todayDeaths'], data['todayRecovered'], data['affectedCountries']);
             const authorAvatarURL = message.author.avatarURL();
             const worldEmbed = new Discord.MessageEmbed()
@@ -213,8 +219,8 @@ client.on('message', async message => {
         }
         default: {
             let countryName = message.content.slice(prefix.length).trimLeft();
-            const data = await apireq.getDataOfCountry(countryName);
-            const wrongCountry = await apireq.checkIfRightCountry(data['country']);
+            const data = await getDataOfCountry(countryName);
+            const wrongCountry = await checkIfRightCountry(data['country']);
             if (wrongCountry === true) {
                 const embedWrongCountry = new Discord.MessageEmbed()
                     .setColor(embedColor)
@@ -250,4 +256,4 @@ client.on('message', async message => {
     }
 })
 
-client.login(token);
+client.login(process.env.DISCORD_TOKEN);
