@@ -14,7 +14,7 @@ async function checkIfRightCountry(countryName: string) {
 
 async function getDataOfCountry(countryName: string) {
   const data = axios
-    .get(`${APILink}v3/covid-19/countries/${countryName}?yesterday=1`)
+    .get(`${APILink}v3/covid-19/countries/${countryName}`)
     .then((res: any) => res.data)
     .catch((err: any) => err);
   return data;

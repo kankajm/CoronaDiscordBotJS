@@ -8,6 +8,7 @@ const { getDataOfCountry, checkIfRightCountry, getDataOfWorld, scrapePESNumber, 
 const { initializeBot } = require('./core/initialize');
 const { richPresence } = require('./core/rpc');
 const { getPESData } = require('./core/scraping/pes');
+const { covidInfo } = require('./core/covidInfo');
 
 const Discord = require('discord.js');
 const client = new Discord.Client();
@@ -167,7 +168,7 @@ client.on('message', async message => {
                 .setTitle('COVID-19 Symptoms and info:')
                 .setAuthor('CoronaBot', coronaLogo)
                 .addFields(
-                    { name: "Source: WHO", value: `DOPLNIT!` }
+                    { name: "Source: WHO", value: `${covidInfo}` }
                 )
                 .setTimestamp()
                 .setFooter(`Requested by ${message.author.username}#${message.author.discriminator}`, authorAvatarURL);
@@ -186,7 +187,8 @@ client.on('message', async message => {
                     { name: 'To show overall performance of the bot use:', value: '.corona ping', inline: true },
                     { name: 'To invite this bot on your server use:', value: '.corona invite', inline: true },
                     { name: 'To show on how many servers CoronaBot is:', value: '.corona servers', inline: true },
-                    { name: 'To show authors of the CoronaBot:', value: '.corona authors', inline: true }
+                    { name: 'To show authors of the CoronaBot:', value: '.corona authors', inline: true },
+                    { name: 'CZ ONLY: Zobrazí aktuální skóre systému PES', value: '.corona pes', inline: true }
                 )
                 .setFooter('In case of any problem please contact me (kanka@jkanka.cz or kankaj#2731)', 'https://ourghtfu.sirv.com/Images/czechIcon.png');
             return message.channel.send(embedHelp);

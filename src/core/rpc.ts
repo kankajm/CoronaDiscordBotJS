@@ -7,9 +7,10 @@ function richPresence(serversJoined: number): string {
       ".corona help",
       `Helping on ${serversJoined} servers!`,
       ".corona invite",
-      "corona-bot.eu",
     ];
     return rpcs[getRandomInt(rpcs.length)];
 }
+
+// ! add "corona-bot.eu" later
 
 module.exports = { richPresence };

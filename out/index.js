@@ -44,6 +44,7 @@ var _c = require('./core/apiRequests'), getDataOfCountry = _c.getDataOfCountry, 
 var initializeBot = require('./core/initialize').initializeBot;
 var richPresence = require('./core/rpc').richPresence;
 var getPESData = require('./core/scraping/pes').getPESData;
+var covidInfo = require('./core/covidInfo').covidInfo;
 var Discord = require('discord.js');
 var client = new Discord.Client();
 var Country_1 = require("./models/Country");
@@ -201,7 +202,7 @@ client.on('message', function (message) { return __awaiter(void 0, void 0, void 
                         .setColor(embedColor)
                         .setTitle('COVID-19 Symptoms and info:')
                         .setAuthor('CoronaBot', coronaLogo)
-                        .addFields({ name: "Source: WHO", value: "DOPLNIT!" })
+                        .addFields({ name: "Source: WHO", value: "" + covidInfo })
                         .setTimestamp()
                         .setFooter("Requested by " + message.author.username + "#" + message.author.discriminator, authorAvatarURL);
                     return [2 /*return*/, message.channel.send(infoEmbed)];
@@ -213,7 +214,7 @@ client.on('message', function (message) { return __awaiter(void 0, void 0, void 
                         .setColor(embedColor)
                         .setTitle('Commands for the CoronaBot:')
                         .setAuthor('CoronaBot', coronaLogo)
-                        .addFields({ name: 'To show total numbers from countries all around the world use:', value: '.corona world', inline: true }, { name: 'To show info and numbers about specific country use:', value: '.corona <country>', inline: true }, { name: 'To show verified informations about symptoms of the COVID-19:', value: '.corona info', inline: true }, { name: 'To show version of the bot use:', value: '.corona version', inline: true }, { name: 'To show overall performance of the bot use:', value: '.corona ping', inline: true }, { name: 'To invite this bot on your server use:', value: '.corona invite', inline: true }, { name: 'To show on how many servers CoronaBot is:', value: '.corona servers', inline: true }, { name: 'To show authors of the CoronaBot:', value: '.corona authors', inline: true })
+                        .addFields({ name: 'To show total numbers from countries all around the world use:', value: '.corona world', inline: true }, { name: 'To show info and numbers about specific country use:', value: '.corona <country>', inline: true }, { name: 'To show verified informations about symptoms of the COVID-19:', value: '.corona info', inline: true }, { name: 'To show version of the bot use:', value: '.corona version', inline: true }, { name: 'To show overall performance of the bot use:', value: '.corona ping', inline: true }, { name: 'To invite this bot on your server use:', value: '.corona invite', inline: true }, { name: 'To show on how many servers CoronaBot is:', value: '.corona servers', inline: true }, { name: 'To show authors of the CoronaBot:', value: '.corona authors', inline: true }, { name: 'CZ ONLY: Zobrazí aktuální skóre systému PES', value: '.corona pes', inline: true })
                         .setFooter('In case of any problem please contact me (kanka@jkanka.cz or kankaj#2731)', 'https://ourghtfu.sirv.com/Images/czechIcon.png');
                     return [2 /*return*/, message.channel.send(embedHelp)];
                 }

@@ -1,9 +1,9 @@
 {
 	"prefix": ".corona",
-	"version": "1.9.3 DEVELOPMENT",
+	"version": "1.9.4 PRE-RELEASE",
 	"inviteLink": "https://corona-bot.eu/invite",
 	"APILink": "https://corona.lmao.ninja/",
 	"embedColor": "#FF6347",
 	"coronaLogo": "https://ourghtfu.sirv.com/Images/coronabot2.png",
-	"lastUpdate": "14.12.2020"
+	"lastUpdate": "20.12.2020"
 }

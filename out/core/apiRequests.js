@@ -58,7 +58,7 @@ function getDataOfCountry(countryName) {
         var data;
         return __generator(this, function (_a) {
             data = axios
-                .get(APILink + "v3/covid-19/countries/" + countryName + "?yesterday=1")
+                .get(APILink + "v3/covid-19/countries/" + countryName)
                 .then(function (res) { return res.data; })
                 .catch(function (err) { return err; });
             return [2 /*return*/, data];
