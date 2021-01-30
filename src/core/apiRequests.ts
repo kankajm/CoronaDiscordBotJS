@@ -34,6 +34,13 @@ async function APIStatusCode() {
     .then((res: any) => res.status)
 }
 
+async function getVaccinationCountryData(countryName: string) {
+  return await axios
+  .get(`${APILink}v3/covid-19/vaccine/coverage/countries/${countryName}?lastdays=1`)
+  .then((res: any) => res.data)
+  .catch((err: any) => err);
+}
+
 function scrapePESNumber() {
   const pesNum = rp('https://onemocneni-aktualne.mzcr.cz/pes')
   .then(function (htmlString: any) {
@@ -49,5 +56,6 @@ module.exports = {
   checkIfRightCountry,
   getDataOfWorld,
   scrapePESNumber,
-  APIStatusCode
+  APIStatusCode,
+  getVaccinationCountryData
 };

@@ -40,11 +40,12 @@ var _a = require('../config.json'), prefix = _a.prefix, version = _a.version, in
 var dotenv = require('dotenv');
 dotenv.config();
 var _b = require('./core/systemInfo'), systemName = _b.systemName, nodeVersion = _b.nodeVersion;
-var _c = require('./core/apiRequests'), getDataOfCountry = _c.getDataOfCountry, checkIfRightCountry = _c.checkIfRightCountry, getDataOfWorld = _c.getDataOfWorld, scrapePESNumber = _c.scrapePESNumber, APIStatusCode = _c.APIStatusCode;
+var _c = require('./core/apiRequests'), getDataOfCountry = _c.getDataOfCountry, checkIfRightCountry = _c.checkIfRightCountry, getDataOfWorld = _c.getDataOfWorld, scrapePESNumber = _c.scrapePESNumber, APIStatusCode = _c.APIStatusCode, getVaccinationCountryData = _c.getVaccinationCountryData;
 var initializeBot = require('./core/initialize').initializeBot;
 var richPresence = require('./core/rpc').richPresence;
 var getPESData = require('./core/scraping/pes').getPESData;
 var covidInfo = require('./core/covidInfo').covidInfo;
+var formatNumber = require('./core/numberFormat').formatNumber;
 var Discord = require('discord.js');
 var client = new Discord.Client();
 var Country_1 = require("./models/Country");
@@ -92,7 +93,7 @@ client.on('message', function (message) { return __awaiter(void 0, void 0, void 
 }); });
 // Listens to all users.
 client.on('message', function (message) { return __awaiter(void 0, void 0, void 0, function () {
-    var args, command, _a, authorAvatarURL, embedServers, authorAvatarURL, embedVersion, ping, authorAvatarURL, apiStatusCode, apiStatusFormatted, embedPing, embedAuthors, authorAvatarURL, inviteEmbed, pesNumber, data, thumbnail, authorAvatarURL, inviteEmbed, authorAvatarURL, infoEmbed, embedHelp, data, world_object, authorAvatarURL, worldEmbed, countryName, data, wrongCountry, embedWrongCountry, country_object, authorAvatarURL, countryEmbed;
+    var args, command, _a, authorAvatarURL, embedServers, authorAvatarURL, embedVersion, ping, authorAvatarURL, apiStatusCode, apiStatusFormatted, embedPing, embedAuthors, authorAvatarURL, inviteEmbed, pesNumber, data, thumbnail, authorAvatarURL, inviteEmbed, authorAvatarURL, infoEmbed, embedHelp, data, world_object, authorAvatarURL, worldEmbed, countryName, data, wrongCountry, embedWrongCountry, country_object, vaccination_numbers, fetched_vaccination_data, country_vaccination, authorAvatarURL, countryEmbed;
     return __generator(this, function (_b) {
         switch (_b.label) {
             case 0:
@@ -243,29 +244,37 @@ client.on('message', function (message) { return __awaiter(void 0, void 0, void 
                 return [4 /*yield*/, checkIfRightCountry(data['country'])];
             case 16:
                 wrongCountry = _b.sent();
-                if (wrongCountry === true) {
-                    embedWrongCountry = new Discord.MessageEmbed()
-                        .setColor(embedColor)
-                        .addFields({ name: 'ERROR! :no_entry_sign:', value: 'You have written wrong country name or database is unavailable. Try it again.' });
-                    return [2 /*return*/, message.channel.send(embedWrongCountry)];
+                if (!(wrongCountry === true)) return [3 /*break*/, 17];
+                embedWrongCountry = new Discord.MessageEmbed()
+                    .setColor(embedColor)
+                    .addFields({ name: 'ERROR! :no_entry_sign:', value: 'You have written wrong country name or database is unavailable. Try it again.' });
+                return [2 /*return*/, message.channel.send(embedWrongCountry)];
+            case 17:
+                country_object = new Country_1.Country(data['country'], data['countryInfo']['iso2'], data['continent'], data['cases'], data['tests'], data['critical'], data['deaths'], data['recovered'], data['active'], data['todayCases'], data['todayDeaths'], data['todayRecovered']);
+                vaccination_numbers = void 0;
+                return [4 /*yield*/, getVaccinationCountryData(data['country'])];
+            case 18:
+                fetched_vaccination_data = _b.sent();
+                country_vaccination = fetched_vaccination_data['timeline'];
+                if (country_vaccination === null || country_vaccination === undefined) {
+                    vaccination_numbers = 0;
                 }
                 else {
-                    country_object = new Country_1.Country(data['country'], data['countryInfo']['iso2'], data['continent'], data['cases'], data['tests'], data['critical'], data['deaths'], data['recovered'], data['active'], data['todayCases'], data['todayDeaths'], data['todayRecovered']);
-                    authorAvatarURL = message.author.avatarURL();
-                    countryEmbed = new Discord.MessageEmbed()
-                        .setColor(embedColor)
-                        .setTitle('COVID-19 cases in ' + country_object.get_name + ' ' + country_object.get_flag_emoji)
-                        .setAuthor('CoronaBot', coronaLogo)
-                        .addFields({
-                        name: "*Here is your data boss* :sunglasses:",
-                        value: "**Total cases:** " + country_object.get_cases + "\n                                                                       **Total deaths:** " + country_object.get_deaths + "\n                                                                       **Total recovered:** " + country_object.get_recovered + "\n                                                                       **Total tests:** " + country_object.get_tests + "\n                                                                       **Active cases:** " + country_object.get_active_cases + "\n                                                                       **Critical condition:** " + country_object.get_critical_cases + "\n                                                                       **Today's cases:** " + country_object.get_today_cases + "\n                                                                       **Today's deaths:** " + country_object.get_today_deaths + "\n                                                                       **Today's recovered:** " + country_object.get_today_recovered
-                    })
-                        .setTimestamp()
-                        .setFooter("Requested by " + message.author.username + "#" + message.author.discriminator, authorAvatarURL);
-                    return [2 /*return*/, message.channel.send(countryEmbed)];
+                    vaccination_numbers = country_vaccination[Object.keys(country_vaccination)[0]];
                 }
-                _b.label = 17;
-            case 17: return [2 /*return*/];
+                ;
+                authorAvatarURL = message.author.avatarURL();
+                countryEmbed = new Discord.MessageEmbed()
+                    .setColor(embedColor)
+                    .setTitle('COVID-19 cases in ' + country_object.get_name + ' ' + country_object.get_flag_emoji)
+                    .setAuthor('CoronaBot', coronaLogo)
+                    .addFields({
+                    name: "*Here is your data boss* :sunglasses:",
+                    value: "**Total cases:** " + country_object.get_cases + "\n                                                                       **Total deaths:** " + country_object.get_deaths + "\n                                                                       **Total recovered:** " + country_object.get_recovered + "\n                                                                       **Total tests:** " + country_object.get_tests + "\n                                                                       **Active cases:** " + country_object.get_active_cases + "\n                                                                       **Critical condition:** " + country_object.get_critical_cases + "\n                                                                       **Today's cases:** " + country_object.get_today_cases + "\n                                                                       **Today's deaths:** " + country_object.get_today_deaths + "\n                                                                       **Today's recovered:** " + country_object.get_today_recovered + "\n                                                                       **People vaccinated to this day:** " + formatNumber(vaccination_numbers)
+                })
+                    .setTimestamp()
+                    .setFooter("Requested by " + message.author.username + "#" + message.author.discriminator, authorAvatarURL);
+                return [2 /*return*/, message.channel.send(countryEmbed)];
         }
     });
 }); });

@@ -4,11 +4,12 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 const { systemName, nodeVersion } = require('./core/systemInfo');
-const { getDataOfCountry, checkIfRightCountry, getDataOfWorld, scrapePESNumber, APIStatusCode } = require('./core/apiRequests');
+const { getDataOfCountry, checkIfRightCountry, getDataOfWorld, scrapePESNumber, APIStatusCode, getVaccinationCountryData } = require('./core/apiRequests');
 const { initializeBot } = require('./core/initialize');
 const { richPresence } = require('./core/rpc');
 const { getPESData } = require('./core/scraping/pes');
 const { covidInfo } = require('./core/covidInfo');
+const { formatNumber } = require('./core/numberFormat');
 
 const Discord = require('discord.js');
 const client = new Discord.Client();
@@ -232,6 +233,14 @@ client.on('message', async message => {
                 return message.channel.send(embedWrongCountry);
             } else {
                 const country_object: Country = new Country(data['country'], data['countryInfo']['iso2'], data['continent'], data['cases'], data['tests'], data['critical'], data['deaths'], data['recovered'], data['active'], data['todayCases'], data['todayDeaths'], data['todayRecovered']);
+                let vaccination_numbers: any;
+                const fetched_vaccination_data: any = await getVaccinationCountryData(data['country']);
+                const country_vaccination: any = fetched_vaccination_data['timeline'];
+                if (country_vaccination === null || country_vaccination === undefined) {
+                    vaccination_numbers = 0
+                } else {
+                    vaccination_numbers = country_vaccination[Object.keys(country_vaccination)[0]];
+                };
                 const authorAvatarURL = message.author.avatarURL();
                 const countryEmbed = new Discord.MessageEmbed()
                     .setColor(embedColor)
@@ -247,7 +256,8 @@ client.on('message', async message => {
                                                                        **Critical condition:** ${country_object.get_critical_cases}
                                                                        **Today's cases:** ${country_object.get_today_cases}
                                                                        **Today's deaths:** ${country_object.get_today_deaths}
-                                                                       **Today's recovered:** ${country_object.get_today_recovered}`
+                                                                       **Today's recovered:** ${country_object.get_today_recovered}
+                                                                       **People vaccinated to this day:** ${formatNumber(vaccination_numbers)}`
                         }
                     )
                     .setTimestamp()

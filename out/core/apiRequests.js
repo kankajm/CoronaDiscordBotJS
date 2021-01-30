@@ -89,6 +89,19 @@ function APIStatusCode() {
         });
     });
 }
+function getVaccinationCountryData(countryName) {
+    return __awaiter(this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, axios
+                        .get(APILink + "v3/covid-19/vaccine/coverage/countries/" + countryName + "?lastdays=1")
+                        .then(function (res) { return res.data; })
+                        .catch(function (err) { return err; })];
+                case 1: return [2 /*return*/, _a.sent()];
+            }
+        });
+    });
+}
 function scrapePESNumber() {
     var pesNum = rp('https://onemocneni-aktualne.mzcr.cz/pes')
         .then(function (htmlString) {
@@ -103,5 +116,6 @@ module.exports = {
     checkIfRightCountry: checkIfRightCountry,
     getDataOfWorld: getDataOfWorld,
     scrapePESNumber: scrapePESNumber,
-    APIStatusCode: APIStatusCode
+    APIStatusCode: APIStatusCode,
+    getVaccinationCountryData: getVaccinationCountryData
 };
