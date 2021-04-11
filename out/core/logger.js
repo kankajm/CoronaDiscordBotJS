@@ -1,12 +1,12 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.logInit = void 0;
-var log4js = require('log4js');
+const log4js = require('log4js');
 log4js.configure({
     appenders: { CoronaBot: { type: "file", filename: "../logs.log" } },
     categories: { default: { appenders: ["CoronaBot"], level: "error" } }
 });
-var logger = log4js.getLogger("CoronaBot");
+const logger = log4js.getLogger("CoronaBot");
 logger.level = "debug";
 // [2020-12-14T23:03:20.494] [DEBUG] coronabot - Got cheese.
 function logDebug(message) {
@@ -30,7 +30,7 @@ function logFatal(message) {
 }
 // [2020-12-14T23:31:58.109] [INFO] CoronaBot - User kankaj#2731 (161071543584030720) used command: help
 function logUserActivity(userID, nickname, discriminator, command) {
-    logger.info("User " + nickname + "#" + discriminator + " (" + userID + ") used command: " + command);
+    logger.info(`User ${nickname}#${discriminator} (${userID}) used command: ${command}`);
 }
 // Used to log console input in core/initialize
 function logInit(message) {

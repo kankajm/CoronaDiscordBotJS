@@ -1,8 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.World = void 0;
-var World = /** @class */ (function () {
-    function World(total_cases, total_deaths, total_recovered, total_tests, active_cases, critical_cases, today_cases, today_deaths, today_recovered, affected_countries) {
+class World {
+    constructor(total_cases, total_deaths, total_recovered, total_tests, active_cases, critical_cases, today_cases, today_deaths, today_recovered, affected_countries) {
         this.total_cases = total_cases;
         this.total_deaths = total_deaths;
         this.total_recovered = total_recovered;
@@ -14,79 +14,38 @@ var World = /** @class */ (function () {
         this.today_recovered = today_recovered;
         this.affected_countries = affected_countries;
     }
-    World.prototype.format_number = function (num) {
+    format_number(num) {
         return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
-    };
-    Object.defineProperty(World.prototype, "get_cases", {
-        get: function () {
-            return this.format_number(this.total_cases);
-        },
-        enumerable: false,
-        configurable: true
-    });
-    Object.defineProperty(World.prototype, "get_deaths", {
-        get: function () {
-            return this.format_number(this.total_deaths);
-        },
-        enumerable: false,
-        configurable: true
-    });
-    Object.defineProperty(World.prototype, "get_recovered", {
-        get: function () {
-            return this.format_number(this.total_recovered);
-        },
-        enumerable: false,
-        configurable: true
-    });
-    Object.defineProperty(World.prototype, "get_tests", {
-        get: function () {
-            return this.format_number(this.total_tests);
-        },
-        enumerable: false,
-        configurable: true
-    });
-    Object.defineProperty(World.prototype, "get_active", {
-        get: function () {
-            return this.format_number(this.active_cases);
-        },
-        enumerable: false,
-        configurable: true
-    });
-    Object.defineProperty(World.prototype, "get_critical", {
-        get: function () {
-            return this.format_number(this.critical_cases);
-        },
-        enumerable: false,
-        configurable: true
-    });
-    Object.defineProperty(World.prototype, "get_today_cases", {
-        get: function () {
-            return this.format_number(this.today_cases);
-        },
-        enumerable: false,
-        configurable: true
-    });
-    Object.defineProperty(World.prototype, "get_today_deaths", {
-        get: function () {
-            return this.format_number(this.today_deaths);
-        },
-        enumerable: false,
-        configurable: true
-    });
-    Object.defineProperty(World.prototype, "get_today_recovered", {
-        get: function () {
-            return this.format_number(this.today_recovered);
-        },
-        enumerable: false,
-        configurable: true
-    });
-    Object.defineProperty(World.prototype, "get_affected_countries", {
-        get: function () {
-            return this.format_number(this.affected_countries);
-        },
-        enumerable: false,
-        configurable: true
-    });
-    return World;
-}());
+    }
+    get get_cases() {
+        return this.format_number(this.total_cases);
+    }
+    get get_deaths() {
+        return this.format_number(this.total_deaths);
+    }
+    get get_recovered() {
+        return this.format_number(this.total_recovered);
+    }
+    get get_tests() {
+        return this.format_number(this.total_tests);
+    }
+    get get_active() {
+        return this.format_number(this.active_cases);
+    }
+    get get_critical() {
+        return this.format_number(this.critical_cases);
+    }
+    get get_today_cases() {
+        return this.format_number(this.today_cases);
+    }
+    get get_today_deaths() {
+        return this.format_number(this.today_deaths);
+    }
+    get get_today_recovered() {
+        return this.format_number(this.today_recovered);
+    }
+    get get_affected_countries() {
+        return this.format_number(this.affected_countries);
+    }
+}
 exports.World = World;

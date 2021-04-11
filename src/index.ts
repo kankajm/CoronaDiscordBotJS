@@ -65,9 +65,22 @@ client.on('message', async message => {
 
     const args = message.content.slice(prefix.length).trim().split(' ');
     const command = args.shift().toLowerCase();
+/*
+    // If there is more than one parameter it compares two countries.
+    if (args[0] !== undefined) {
+        const countryNameFirst: string = args[0];
+        const countryNameSecond: string = args[-1];
 
-    //apireq.sendActivity(message.author.id, message.author.username, message.author.discriminator, command);
+        const dataOne: any = await getDataOfCountry(countryNameFirst);
+        const dataSecond: any = await getDataOfCountry(countryNameSecond);
 
+        //const firstCountry: Country = new Country(dataOne['country'], dataOne['countryInfo']['iso2'], dataOne['continent'], dataOne['cases'], dataOne['tests'], dataOne['critical'], dataOne['deaths'], dataOne['recovered'], dataOne['active'], dataOne['todayCases'], dataOne['todayDeaths'], dataOne['todayRecovered']);
+        //const secondCountry: Country = new Country(dataSecond['country'], dataSecond['countryInfo']['iso2'], dataSecond['continent'], dataSecond['cases'], dataSecond['tests'], dataSecond['critical'], dataSecond['deaths'], dataSecond['recovered'], dataSecond['active'], dataSecond['todayCases'], dataSecond['todayDeaths'], dataSecond['todayRecovered']);
+
+        console.log(dataOne);
+        console.log(dataSecond);
+    }
+*/
     switch (command) {
         case 'servers': {
             const authorAvatarURL = message.author.avatarURL();
@@ -143,6 +156,24 @@ client.on('message', async message => {
             return message.channel.send(inviteEmbed);
         }
         case 'pes': {
+            const authorAvatarURL = message.author.avatarURL();
+            const pesEmbed = new Discord.MessageEmbed()
+                .setColor(embedColor)
+                .setTitle('PES (Protiepidemický systém ČR), (Anti-epidemic system)')
+                .setAuthor('CoronaBot', coronaLogo)
+                .setThumbnail('https://ourghtfu.sirv.com/Images/pesDogs/pes-dead.png')
+                .addFields(
+                    { name: 'CZ: Díky neschopnosti Vlády ČR byl odvolán ministr zdravotnictví:', value: 'Nový ministr zdravotnictví Petr Arenberger (Bývalý člen KSČ, podporovatel Sputniku V a patolízač prezidenta Zemana) ve svém projevu zmínil tvorbu nového protiepidemického systému. Na starý PES máme prý zapomenout.' },
+                    { name: 'Více informací o neschopném MZČR můžete nalézt na stránkách:', value: 'https://www.mzcr.cz/' },
+                    { name: 'EN: Due to the incompetence of the Government of the Czech Republic, the Minister of Health was dismissed:', value: 'The new Minister of Health Petr Arenberger (former member of the Communist Party, supporter of Sputnik V and heel licker of President Zeman) mentioned the creation of a new anti-epidemic system in his speech. We are supposed to forget about the old PES.' },
+                    { name: 'More information about the incompetent Ministry of Health can be found at:', value: 'https://www.mzcr.cz/' },
+                    { name: 'Článek mluvící o tomto tématu:', value: 'https://www.irozhlas.cz/zpravy-domov/petr-arenberger-epidemie-koronavirus-covid_2104091323_tzr' },
+                )
+                .setTimestamp()
+                .setFooter(`Requested by ${message.author.username}#${message.author.discriminator}`, authorAvatarURL);
+                return message.channel.send(pesEmbed);
+
+            /* 
             const pesNumber: number = await scrapePESNumber();
             const data = await getPESData(pesNumber);
 
@@ -161,6 +192,7 @@ client.on('message', async message => {
                 .setTimestamp()
                 .setFooter(`Requested by ${message.author.username}#${message.author.discriminator}`, authorAvatarURL);
             return message.channel.send(inviteEmbed);
+            */
         }
         case 'info': {
             const authorAvatarURL = message.author.avatarURL();

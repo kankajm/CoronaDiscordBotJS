@@ -1,7 +1,7 @@
 "use strict";
-var api = require('./apiRequests');
+const api = require('./apiRequests');
 function APILiveCheck() {
-    var APIStatus = api.APIStatusCode();
+    const APIStatus = api.APIStatusCode();
     APIStatus.then(function (statusCode) {
         if (statusCode === 200) {
             console.log('API is OK, continuing running bot.');
@@ -14,14 +14,14 @@ function APILiveCheck() {
 }
 function initializeBot(botVersion, systemName, nodeVersion, botName, botID) {
     // Prints basic info about server and status
-    console.log("Bot is online! Bot version: " + botVersion);
-    console.log("Server is running on " + systemName + ", Node.js version: " + nodeVersion);
-    console.log("Name: " + botName);
-    console.log("ID: " + botID);
+    console.log(`Bot is online! Bot version: ${botVersion}`);
+    console.log(`Server is running on ${systemName}, Node.js version: ${nodeVersion}`);
+    console.log(`Name: ${botName}`);
+    console.log(`ID: ${botID}`);
     // Check if API is working. If not shuts the bot.
     APILiveCheck();
 }
-module.exports = { initializeBot: initializeBot, APIOK: api.APIStatusCode().then(function (statusCode) {
+module.exports = { initializeBot, APIOK: api.APIStatusCode().then(function (statusCode) {
         if (statusCode === 200) {
             return true;
         }

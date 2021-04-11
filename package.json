@@ -1,8 +1,9 @@
 {
   "name": "coronabotjs",
-  "version": "1.9.4",
+  "version": "1.9.6",
   "description": "[![Discord Bots](https://top.gg/api/widget/status/692525015668621321.svg)](https://top.gg/bot/692525015668621321)",
   "main": "/out/index.js",
+  "type": "commonjs",
   "scripts": {
     "start": "cd out && node index"
   },
@@ -21,11 +22,10 @@
     "@types/cheerio": "^0.22.23",
     "@types/is-reachable": "^3.1.0",
     "@types/node": "^14.14.9",
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "cheerio": "^1.0.0-rc.3",
     "discord.js": "^12.4.1",
     "dotenv": "^8.2.0",
-    "log4js": "^6.3.0",
     "os-name": "^4.0.0",
     "request": "^2.88.2",
     "request-promise": "^4.2.6"
