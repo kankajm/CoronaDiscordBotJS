@@ -37,20 +37,10 @@ async function getVaccinationCountryData(countryName) {
         .then((res) => res.data)
         .catch((err) => err);
 }
-function scrapePESNumber() {
-    const pesNum = rp('https://onemocneni-aktualne.mzcr.cz/pes')
-        .then(function (htmlString) {
-        const $ = cheerio.load(htmlString);
-        const siteHeading = $('span#pes-current-degree');
-        return siteHeading.contents().first().text()[7];
-    });
-    return pesNum;
-}
 module.exports = {
     getDataOfCountry,
     checkIfRightCountry,
     getDataOfWorld,
-    scrapePESNumber,
     APIStatusCode,
     getVaccinationCountryData
 };

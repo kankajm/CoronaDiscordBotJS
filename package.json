@@ -1,6 +1,6 @@
 {
   "name": "coronabotjs",
-  "version": "1.9.6",
+  "version": "1.9.7",
   "description": "[![Discord Bots](https://top.gg/api/widget/status/692525015668621321.svg)](https://top.gg/bot/692525015668621321)",
   "main": "/out/index.js",
   "type": "commonjs",
@@ -29,5 +29,8 @@
     "os-name": "^4.0.0",
     "request": "^2.88.2",
     "request-promise": "^4.2.6"
+  },
+  "devDependencies": {
+    "typescript": "^4.3.2"
   }
 }

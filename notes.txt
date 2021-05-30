@@ -1,1 +1,0 @@
-Importovat formatovac do modelů.

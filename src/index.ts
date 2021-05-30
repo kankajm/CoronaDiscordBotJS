@@ -4,10 +4,9 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 const { systemName, nodeVersion } = require('./core/systemInfo');
-const { getDataOfCountry, checkIfRightCountry, getDataOfWorld, scrapePESNumber, APIStatusCode, getVaccinationCountryData } = require('./core/apiRequests');
+const { getDataOfCountry, checkIfRightCountry, getDataOfWorld, APIStatusCode, getVaccinationCountryData } = require('./core/apiRequests');
 const { initializeBot } = require('./core/initialize');
 const { richPresence } = require('./core/rpc');
-const { getPESData } = require('./core/scraping/pes');
 const { covidInfo } = require('./core/covidInfo');
 const { formatNumber } = require('./core/numberFormat');
 
