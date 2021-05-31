@@ -9,13 +9,6 @@
 DISCORD_TOKEN (Equals bot token)
 ```
 
-### How to create Docker image and run it:
-
-```
-docker build -t coronabot .
-docker run -d coronabot
-```
-
 ### Credits and Other Project Licenses
 
 - **COVID-19 API:** https://github.com/disease-sh/API

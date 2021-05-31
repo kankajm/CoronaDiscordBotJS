@@ -4,13 +4,11 @@ function getRandomInt(max: number): number {
 
 function richPresence(serversJoined: number): string {
     let rpcs: string[] = [
-      ".corona help",
-      `Helping on ${serversJoined} servers!`,
-      ".corona invite",
+      "/help",
+      "/invite",
+      "/servers"
     ];
     return rpcs[getRandomInt(rpcs.length)];
 }
-
-// ! add "corona-bot.eu" later
 
 module.exports = { richPresence };
