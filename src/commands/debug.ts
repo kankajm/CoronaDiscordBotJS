@@ -14,6 +14,7 @@ function apiStatusFormatter(statusCode: number) {
 module.exports = {
     slash: true,
     testOnly: false,
+    category: 'Misc',
     description: "Debug informations.",
     callback: async ({}) => {
         const apiStatusFormatted: string = apiStatusFormatter(await APIStatusCode());

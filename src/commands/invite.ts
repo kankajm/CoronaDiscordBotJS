@@ -5,6 +5,7 @@ const { formatNumber } = require('../core/numberFormat');
 module.exports = {
     slash: true,
     testOnly: false,
+    category: 'Misc',
     description: 'Invite this bot on your server!',
     callback: ({}) => {
         const inviteEmbed = new MessageEmbed()

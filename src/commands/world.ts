@@ -7,6 +7,7 @@ const { formatNumber } = require('../core/numberFormat');
 module.exports = {
     slash: true,
     testOnly: false,
+    category: 'Fun',
     description: 'Shows COVID-19 statistics about the whole world!',
     callback: async ({}) => {
         const data = await getDataOfWorld();

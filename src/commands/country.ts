@@ -7,6 +7,7 @@ const { formatNumber } = require('../core/numberFormat');
 module.exports = {
     slash: true,
     testOnly: false,
+    category: 'Fun',
     description: 'Shows COVID-19 statistics about desired country!',
     minArgs: 1,
     expectedArgs: '<name>',

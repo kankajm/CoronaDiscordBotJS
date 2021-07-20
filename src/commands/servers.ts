@@ -4,6 +4,7 @@ const { embedColor, inviteLink } = require('../../config.json');
 module.exports = {
     slash: true,
     testOnly: false,
+    category: 'Misc',
     description: "Shows number of servers are we on!",
     callback: ({ client }) => {
             const embedServers = new MessageEmbed()

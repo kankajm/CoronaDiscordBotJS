@@ -4,6 +4,7 @@ const { embedColor } = require('../../config.json');
 module.exports = {
     slash: true,
     testOnly: false,
+    category: 'Misc',
     description: "Shows authors of the bot!",
     callback: async ({}) => {
         const embedAuthors = new MessageEmbed()

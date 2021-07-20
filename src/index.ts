@@ -37,7 +37,20 @@ client.on('ready', () => {
         ignoreBots: true,
         testServers: [testGuildId],
         showWarns: false,
-    })
+    }).setCategorySettings([
+        {
+            name: 'Fun',
+            emoji: ':joy:'
+        },
+        {
+            name: 'Help',
+            emoji: ':helmet_with_cross:'
+        },
+        {
+            name: 'Misc',
+            emoji: ':ninja:'
+        }
+    ]);
 })
 
 // Listens for legacy commands and redirect user to slash commands.
