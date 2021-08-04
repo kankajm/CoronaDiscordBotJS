@@ -32,6 +32,6 @@
     "wokcommands": "^1.3.5"
   },
   "devDependencies": {
-    "typescript": "^4.3.2"
+    "typescript": "^4.3.5"
   }
 }

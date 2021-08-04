@@ -50,7 +50,7 @@ client.on('ready', () => {
             name: 'Misc',
             emoji: ':ninja:'
         }
-    ]);
+    ]).setBotOwner(['161071543584030720']);
 })
 
 // Listens for legacy commands and redirect user to slash commands.
@@ -64,6 +64,13 @@ client.on('message', async message => {
         );
         message.channel.send(embedRedirect);
     }
-})
+});
+
+// Test command just for owner.
+client.on('message', async message => {
+    if (message.content.startsWith('!users') && message.author.id == "161071543584030720") { 
+        message.channel.send(message.client.users.cache.size);
+    }
+});
 
 client.login(process.env.DISCORD_TOKEN);
